@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -56,5 +57,24 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->save();
         return $product;
+    }
+
+    public function search($key){
+        $product = Product::where('name','LIKE','%'.$key.'%')->get();
+        if($product){
+            return $product;
+        }else{
+            return ["result"=>"Result Not Found"];
+        }
+        
+    }
+
+    //Test Query Log Function
+    public function queryLog(){
+        DB::enableQueryLog();
+        $users = DB::table('users')->get();
+        $product = DB::table('products')->get();
+        $queries = DB::getQueryLog();
+        dd($queries);
     }
 }
